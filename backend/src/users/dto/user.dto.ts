@@ -1,7 +1,8 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { Role } from 'src/utils/role.enum';
 
 export class UserDto {
+  // @Transform(({ obj }) => console.log('OBJ', obj.data))
   @Expose()
   id: number;
 

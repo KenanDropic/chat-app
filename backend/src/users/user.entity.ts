@@ -19,17 +19,14 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ select: false })
+  @Column()
   password: string;
 
-  @Column({ default: '' })
-  hashedRT: string;
+  @Column({ default: null, nullable: true, select: false })
+  hashedRT: string | null;
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   role: Role;
-
-  //   @OneToMany(() => Order, (order) => order.user)
-  //   orders: Order[];
 
   // this will happen if password get's modified,that by default gets checked by postgres.
   @BeforeInsert()

@@ -1,5 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
+import { PageDto } from 'src/pagination/dto/page.dto';
 import { UserDto } from './dto/user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -10,8 +12,8 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  findAll(): Promise<User[]> {
-    return this.usersService.find();
+  findAll(@Query() query: PageOptionsDto): Promise<PageDto<UserDto>> {
+    return this.usersService.find(query);
   }
 
   @Get('/:id')
