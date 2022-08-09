@@ -21,12 +21,16 @@ export default class AT_Strategy extends PassportStrategy(Strategy, 'jwt') {
       passReqToCallback: true,
     });
   }
-  validate(payload: any) {
-    console.log('ACCESS TOKEN PAYLOAD', payload);
-
+  validate(req: Request, payload: any) {
     if (!payload) throw new UnauthorizedException('Invalid JWT');
 
     if (payload === null) throw new UnauthorizedException();
+
+    const accessToken = req?.cookies['jwt-at'];
+
+    if (!accessToken) {
+      throw new UnauthorizedException('Invalid JWT');
+    }
 
     return payload;
   }

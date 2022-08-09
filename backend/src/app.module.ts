@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { JWTGuard } from './auth/guards';
 
 @Module({
   imports: [
@@ -32,6 +34,6 @@ import { User } from './users/user.entity';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: JWTGuard }],
 })
 export class AppModule {}

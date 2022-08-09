@@ -20,13 +20,11 @@ export default class RT_Strategy extends PassportStrategy(
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: `${process.env.JWT_AT_SECRET}`,
+      secretOrKey: `${process.env.JWT_RT_SECRET}`,
       passReqToCallback: true,
     });
   }
   validate(req: Request, payload: any) {
-    console.log('REFRESH TOKEN PAYLOAD', payload);
-
     if (!payload) throw new UnauthorizedException('Invalid JWT');
 
     if (payload === null) throw new UnauthorizedException();
