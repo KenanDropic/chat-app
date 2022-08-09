@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Res,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -16,6 +21,8 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(User) private repo: Repository<User>,
   ) {}
+
+  /* --------------------------------------------------- */
 
   async hashData(data: string): Promise<string> {
     const salt: string = await bcrypt.genSalt(10);
@@ -53,6 +60,8 @@ export class AuthService {
 
     return this.repo.save(user);
   }
+
+  /* --------------------------------------------------- */
 
   async signup(
     @Res({ passthrough: true }) res: Response,
@@ -123,6 +132,64 @@ export class AuthService {
     return {
       success: true,
       message: 'User Logged Successfully',
+    };
+  }
+
+  async refreshToken(
+    userId: number,
+    rt: string,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<ResponseMessage> {
+    const user: User = await this.repo.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) throw new ForbiddenException('Unauthorized');
+
+    res.clearCookie('jwt-at', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+    res.clearCookie('jwt-rt', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    const rtMatches: boolean = await bcrypt.compare(rt, user.hashedRT);
+
+    if (!rtMatches) throw new ForbiddenException('Unauthorized');
+
+    const accessToken: string = await this.getAccessToken(user.id);
+    const refreshToken: string = await this.getRefreshToken(user.id);
+    await this.updateRTHash(user.id, refreshToken);
+
+    // // 5 days
+    // res.cookie('jwt-rt', refresh_token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   maxAge: 60 * 60 * 24 * 5,
+    // });
+
+    res.cookie('jwt-at', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+
+    res.cookie('jwt-rt', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+
+    return {
+      success: true,
+      message: 'Token refreshed successfully',
     };
   }
 }

@@ -5,10 +5,11 @@ import { User } from 'src/users/user.entity';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AT_Strategy, RT_Strategy } from './strategies/index';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, AT_Strategy, RT_Strategy],
   imports: [
     TypeOrmModule.forFeature([User]),
     UsersModule,

@@ -1,6 +1,6 @@
 import { apiSlice } from "../../app/api/apiSlice";
-import { logOut } from "./authSlice";
-import { SignUpData, Payload, SignInData } from "./interfaces/interfaces";
+import { logOut, setUser } from "./authSlice";
+import { SignUpData, Payload, SignInData, User } from "./interfaces/interfaces";
 import { toast } from "react-toastify";
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -36,7 +36,21 @@ export const authApiSlice = apiSlice.injectEndpoints({
         } catch (error) {}
       },
     }),
+    getMe: builder.query<User, void>({
+      query: (): string | object | any => ({
+        url: "auth/me",
+        method: "GET",
+        credentials: "include",
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setUser(data));
+        } catch (error) {}
+      },
+    }),
   }),
 });
 
-export const { useLoginUMutation, useRegisterUMutation } = authApiSlice;
+export const { useLoginUMutation, useRegisterUMutation, useLazyGetMeQuery } =
+  authApiSlice;
