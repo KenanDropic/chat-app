@@ -19,6 +19,7 @@ import {
 } from "../features/auth/authApiSlice";
 import { SignUpData } from "../features/auth/interfaces/interfaces";
 import { Spinner } from "./index";
+import { toast } from "react-toastify";
 
 const Form: React.FC<FormProps> = ({ status }) => {
   const dispatch = useAppDispatch();
@@ -33,13 +34,18 @@ const Form: React.FC<FormProps> = ({ status }) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormValues>({});
 
   const onSubmit = async (data: FormValues) => {
     if (data.username) {
-      await registerU(data as SignUpData);
+      await registerU(data as SignUpData)
+        .unwrap()
+        .catch((error) => toast.error(error.data.message));
     } else {
-      await loginU(data);
+      await loginU(data)
+        .unwrap()
+        .catch((error) => toast.error(error.data.message));
     }
   };
 
@@ -127,12 +133,26 @@ const Form: React.FC<FormProps> = ({ status }) => {
           {status === "signin" ? (
             <div style={{ fontFamily: "sans-serif", margin: "10px 0px" }}>
               <span>Don't have an account?</span>{" "}
-              <Strong onClick={() => dispatch(setStatus())}>Sign Up</Strong>
+              <Strong
+                onClick={() => {
+                  reset();
+                  dispatch(setStatus());
+                }}
+              >
+                Sign Up
+              </Strong>
             </div>
           ) : (
             <div style={{ fontFamily: "sans-serif", margin: "10px 0px" }}>
               <span>Already have an account?</span>{" "}
-              <Strong onClick={() => dispatch(setStatus())}>Sign In</Strong>
+              <Strong
+                onClick={() => {
+                  reset();
+                  dispatch(setStatus());
+                }}
+              >
+                Sign In
+              </Strong>
             </div>
           )}
         </FormFooter>

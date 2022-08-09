@@ -13,7 +13,10 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
-          toast.success("User registered successfully");
+          const isFulfilled = await queryFulfilled;
+          if (isFulfilled) {
+            toast.success("User registered successfully");
+          }
         } catch (error) {}
       },
     }),
@@ -25,8 +28,11 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
-          localStorage.setItem("logged_in", "true");
-          toast.success("User logged successfully");
+          const isFulfilled = await queryFulfilled;
+          if (isFulfilled) {
+            localStorage.setItem("logged_in", "true");
+            toast.success("User logged successfully");
+          }
         } catch (error) {}
       },
     }),
