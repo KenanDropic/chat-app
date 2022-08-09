@@ -13,10 +13,21 @@ import TextFieldIcon from "./TextFieldIcon";
 import { useAppDispatch, useAppSelector } from "../features/hooks/hooks";
 import { setStatus } from "../features/global/globalSlice";
 import { FormProps, FormValues } from "./interfaces/interfaces";
+import {
+  useLoginUMutation,
+  useRegisterUMutation,
+} from "../features/auth/authApiSlice";
+import { SignUpData } from "../features/auth/interfaces/interfaces";
+import { Spinner } from "./index";
 
 const Form: React.FC<FormProps> = ({ status }) => {
   const dispatch = useAppDispatch();
   const { showPassword } = useAppSelector((state) => state.global);
+  const [loginU, { isLoading, isSuccess }] = useLoginUMutation();
+  const [
+    registerU,
+    { isLoading: isLoadingRegister, isSuccess: isSuccessRegister },
+  ] = useRegisterUMutation();
 
   const {
     register,
@@ -24,8 +35,12 @@ const Form: React.FC<FormProps> = ({ status }) => {
     formState: { errors },
   } = useForm<FormValues>({});
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
+  const onSubmit = async (data: FormValues) => {
+    if (data.username) {
+      await registerU(data as SignUpData);
+    } else {
+      await loginU(data);
+    }
   };
 
   return (

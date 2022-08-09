@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export interface User {}
+import { User } from "./interfaces/interfaces";
 
 interface InitialState {
-  user: null;
+  user: User | null;
 }
 
 const initialState: InitialState = {
