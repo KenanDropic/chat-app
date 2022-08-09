@@ -5,29 +5,36 @@ import { useAppDispatch } from "../features/hooks/hooks";
 
 interface Props {
   iconStart?: string;
-  iconEnd?: string;
-  props?: any;
+  iconEnd?: JSX.Element;
+  props?: {};
 }
 
-const TextFieldIcon: React.FC<any> = ({ iconStart, iconEnd, ...props }) => {
+const TextFieldIcon = React.forwardRef((props: any, ref) => {
   const dispatch = useAppDispatch();
+  // console.log("PROPS", props, "\n", "REF", ref, "\n");
 
   return (
     <TextField
       {...props}
       InputProps={{
-        endAdornment: iconEnd ? (
+        startAdornment: props?.iconstart ? (
+          <InputAdornment position="start" sx={{ cursor: "pointer" }}>
+            {props?.iconstart}
+          </InputAdornment>
+        ) : null,
+        endAdornment: props?.iconend ? (
           <InputAdornment
             position="end"
             sx={{ cursor: "pointer" }}
             onClick={() => dispatch(setShowPassword())}
           >
-            {iconEnd}
+            {props?.iconend}
           </InputAdornment>
         ) : null,
       }}
+      ref={ref}
     />
   );
-};
+});
 
 export default TextFieldIcon;
