@@ -1,11 +1,20 @@
-export interface SignInData {
+interface SignInData {
   email: string;
   password: string;
 }
-export interface SignUpData extends SignInData {
+interface SignUpData extends SignInData {
   username: string;
 }
-export interface Payload {
+interface Payload {
   message: string;
   success: boolean;
 }
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+}
+
+export type { SignInData, SignUpData, Payload, User };
