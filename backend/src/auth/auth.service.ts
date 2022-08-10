@@ -192,4 +192,32 @@ export class AuthService {
       message: 'Token refreshed successfully',
     };
   }
+
+  async logout(userId: number, res: Response): Promise<ResponseMessage> {
+    const user: User = await this.repo.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (user.hashedRT === '') {
+      return { success: true, message: 'Hash is already empty' };
+    }
+
+    res.clearCookie('jwt-at', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+    res.clearCookie('jwt-rt', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+    });
+
+    user.hashedRT = '';
+    await this.repo.save(user);
+
+    return { success: true, message: 'Logout successful' };
+  }
 }

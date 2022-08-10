@@ -49,8 +49,28 @@ export const authApiSlice = apiSlice.injectEndpoints({
         } catch (error) {}
       },
     }),
+    logout: builder.mutation<void, void>({
+      query: (): string | object | any => ({
+        url: "auth/logout",
+        method: "POST",
+      }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        try {
+          const isFinished = await queryFulfilled;
+
+          if (isFinished) {
+            dispatch(logOut());
+          }
+        } catch (error) {}
+      },
+    }),
   }),
 });
 
-export const { useLoginUMutation, useRegisterUMutation, useLazyGetMeQuery } =
-  authApiSlice;
+export const {
+  useLoginUMutation,
+  useRegisterUMutation,
+  useLazyGetMeQuery,
+  useGetMeQuery,
+  useLogoutMutation,
+} = authApiSlice;

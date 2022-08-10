@@ -58,4 +58,12 @@ export class AuthController {
       res,
     );
   }
+
+  @Post('/logout')
+  logoutUser(
+    @LoggedUser() user: UserPassportPayload,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.logout(user.sub, res);
+  }
 }
