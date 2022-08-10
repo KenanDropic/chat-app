@@ -1,5 +1,5 @@
 import { Button, FormControl, FormGroup, TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   FormPageWrapper,
@@ -20,15 +20,19 @@ import {
 import { SignUpData } from "../features/auth/interfaces/interfaces";
 import { Spinner } from "./index";
 import { toast } from "react-toastify";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import useLocalStorage from "../utilities/customHooks/useLocalStorage";
 
 const Form: React.FC<FormProps> = ({ status }) => {
+  const navigate: NavigateFunction = useNavigate();
+  const [logged, setLogged] = useLocalStorage("logged_in", "");
+
   const dispatch = useAppDispatch();
   const { showPassword } = useAppSelector((state) => state.global);
-  const [loginU, { isLoading, isSuccess }] = useLoginUMutation();
-  const [
-    registerU,
-    { isLoading: isLoadingRegister, isSuccess: isSuccessRegister },
-  ] = useRegisterUMutation();
+  const { user } = useAppSelector((state) => state.auth);
+
+  const [loginU, { isLoading }] = useLoginUMutation();
+  const [registerU, { isLoading: loading }] = useRegisterUMutation();
 
   const {
     register,
@@ -37,19 +41,32 @@ const Form: React.FC<FormProps> = ({ status }) => {
     reset,
   } = useForm<FormValues>({});
 
+  // Handle Submit
   const onSubmit = async (data: FormValues) => {
     if (data.username) {
       await registerU(data as SignUpData)
         .unwrap()
+        .then(() => dispatch(setStatus()))
         .catch((error) => toast.error(error.data.message));
     } else {
       await loginU(data)
         .unwrap()
+        .then(() => navigate("/dashboard"))
         .catch((error) => toast.error(error.data.message));
     }
   };
 
-  return (
+  // redirect if logged
+  useEffect(() => {
+    if (logged) {
+      dispatch(setStatus());
+      return navigate("/dashboard");
+    }
+  }, [logged]);
+
+  return isLoading || loading ? (
+    <Spinner />
+  ) : (
     <FormPageWrapper>
       <FormComponent onSubmit={handleSubmit(onSubmit)}>
         <h1 style={{ textAlign: "center", fontFamily: "sans-serif" }}>
