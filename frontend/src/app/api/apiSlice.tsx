@@ -9,13 +9,21 @@ import {
   BaseQueryFn,
   QueryReturnValue,
 } from "@reduxjs/toolkit/dist/query/baseQueryTypes";
-import { logOut } from "../../features/auth/authSlice";
+import { logOut, setCredentials } from "../../features/auth/authSlice";
 
 const mutex = new Mutex();
 
 const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
   fetchBaseQuery({
     baseUrl: "http://127.0.0.1:5000/",
+    // credentials: "include",
+    prepareHeaders(headers, { getState, endpoint }) {
+      const accessToken: string = (getState() as any).auth.atk;
+
+      headers.set("authorization", `Bearer ${accessToken}`);
+
+      return headers;
+    },
     credentials: "include",
   });
 
@@ -46,6 +54,7 @@ const baseQueryWithReauth = async (
           if (refreshResult.data) {
             console.log("REFRESH RESULT DATA", refreshResult?.data);
             localStorage.setItem("logged_in", "true");
+            api.dispatch(setCredentials(refreshResult.data.accessToken));
             //retry original query with new access token
             result = await baseQuery(args, api, extraOptions);
           } else {

@@ -1,5 +1,5 @@
 import { apiSlice } from "../../app/api/apiSlice";
-import { logOut, setUser } from "./authSlice";
+import { logOut, setCredentials, setUser } from "./authSlice";
 import { SignUpData, Payload, SignInData, User } from "./interfaces/interfaces";
 import { toast } from "react-toastify";
 
@@ -13,10 +13,10 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
-          const isFulfilled = await queryFulfilled;
-          if (isFulfilled) {
-            toast.success("User registered successfully");
-          }
+          const { data } = await queryFulfilled;
+          dispatch(setCredentials(data.accessToken as string));
+          // localStorage.setItem("logged_in", "true");
+          toast.success("User registered successfully");
         } catch (error) {}
       },
     }),
@@ -28,11 +28,10 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
-          const isFulfilled = await queryFulfilled;
-          if (isFulfilled) {
-            localStorage.setItem("logged_in", "true");
-            toast.success("User logged successfully");
-          }
+          const { data } = await queryFulfilled;
+          dispatch(setCredentials(data.accessToken as string));
+          localStorage.setItem("logged_in", "true");
+          toast.success("User logged successfully");
         } catch (error) {}
       },
     }),
@@ -40,7 +39,6 @@ export const authApiSlice = apiSlice.injectEndpoints({
       query: (): string | object | any => ({
         url: "auth/me",
         method: "GET",
-        credentials: "include",
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {

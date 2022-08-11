@@ -8,6 +8,7 @@ interface SignUpData extends SignInData {
 interface Payload {
   message: string;
   success: boolean;
+  accessToken?: string;
 }
 
 interface User {
