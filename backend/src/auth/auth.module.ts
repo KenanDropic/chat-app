@@ -15,5 +15,6 @@ import { AT_Strategy, RT_Strategy } from './strategies/index';
     UsersModule,
     JwtModule.register({}),
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

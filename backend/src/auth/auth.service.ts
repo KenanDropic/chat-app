@@ -78,12 +78,6 @@ export class AuthService {
     const accessToken: string = await this.getAccessToken(user.id);
     const refreshToken: string = await this.getRefreshToken(user.id);
 
-    res.cookie('jwt-at', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-
     res.cookie('jwt-rt', refreshToken, {
       httpOnly: true,
       secure: true,
@@ -95,6 +89,7 @@ export class AuthService {
     return {
       success: true,
       message: 'User Registered Successfully',
+      accessToken,
     };
   }
 
@@ -115,12 +110,6 @@ export class AuthService {
     const accessToken: string = await this.getAccessToken(user.id);
     const refreshToken: string = await this.getRefreshToken(user.id);
 
-    res.cookie('jwt-at', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-
     res.cookie('jwt-rt', refreshToken, {
       httpOnly: true,
       secure: true,
@@ -132,6 +121,7 @@ export class AuthService {
     return {
       success: true,
       message: 'User Logged Successfully',
+      accessToken,
     };
   }
 
@@ -148,11 +138,6 @@ export class AuthService {
 
     if (!user) throw new ForbiddenException('Unauthorized');
 
-    res.clearCookie('jwt-at', {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-    });
     res.clearCookie('jwt-rt', {
       httpOnly: true,
       sameSite: 'none',
@@ -167,20 +152,6 @@ export class AuthService {
     const refreshToken: string = await this.getRefreshToken(user.id);
     await this.updateRTHash(user.id, refreshToken);
 
-    // // 5 days
-    // res.cookie('jwt-rt', refresh_token, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: 'none',
-    //   maxAge: 60 * 60 * 24 * 5,
-    // });
-
-    res.cookie('jwt-at', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-
     res.cookie('jwt-rt', refreshToken, {
       httpOnly: true,
       secure: true,
@@ -190,6 +161,7 @@ export class AuthService {
     return {
       success: true,
       message: 'Token refreshed successfully',
+      accessToken,
     };
   }
 
@@ -204,11 +176,6 @@ export class AuthService {
       return { success: true, message: 'Hash is already empty' };
     }
 
-    res.clearCookie('jwt-at', {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-    });
     res.clearCookie('jwt-rt', {
       httpOnly: true,
       sameSite: 'none',
