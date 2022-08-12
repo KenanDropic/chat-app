@@ -1,9 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Socket } from 'socket.io';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
 export class ChatService {
+  disconnect(socket: Socket) {
+    socket.emit('Error', new UnauthorizedException());
+    socket.disconnect();
+  }
+
   create(createChatDto: CreateChatDto) {
     return 'This action adds a new chat';
   }
