@@ -1,6 +1,13 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Role } from 'src/utils/role.enum';
+import { Room } from 'src/chat/entities/room.entity';
 
 @Entity()
 export class User {
@@ -21,6 +28,9 @@ export class User {
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   role: Role;
+
+  @ManyToMany(() => Room, (room) => room.users)
+  rooms: Room[];
 
   // this will happen if password get's modified,that by default gets checked by postgres.
   @BeforeInsert()
