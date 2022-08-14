@@ -2,6 +2,8 @@ import { apiSlice } from "../../app/api/apiSlice";
 import { logOut, setCredentials, setUser } from "./authSlice";
 import { SignUpData, Payload, SignInData, User } from "./interfaces/interfaces";
 import { toast } from "react-toastify";
+import { io } from "socket.io-client";
+import { setSocket } from "../socket/socketSlice";
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -44,6 +46,16 @@ export const authApiSlice = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           dispatch(setUser(data));
+
+          // connect socket client to socket server
+          const socket = io("http://localhost:5000", {
+            extraHeaders: {
+              authorization: localStorage.getItem("tk")
+                ? (localStorage.getItem("tk") as string)
+                : "",
+            },
+          });
+          dispatch(setSocket(socket));
         } catch (error) {}
       },
     }),
