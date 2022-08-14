@@ -1,16 +1,23 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import globalReducer from "./features/global/globalSlice";
 import authReducer from "./features/auth/authSlice";
+import socketReducer from "./features/socket/socketSlice";
 import { apiSlice } from "./app/api/apiSlice";
 
 export const store = configureStore({
   reducer: {
     global: globalReducer,
     auth: authReducer,
+    socket: socketReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({}).concat(apiSlice.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["socket/setSocket"],
+        ignoredPaths: ["socket.socket"],
+      },
+    }).concat(apiSlice.middleware),
   devTools: true,
 });
 
