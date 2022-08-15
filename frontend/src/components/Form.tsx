@@ -54,6 +54,8 @@ const Form: React.FC<FormProps> = ({ status }) => {
         .then(() => navigate("/dashboard"))
         .catch((error) => toast.error(error.data.message));
     }
+    reset();
+    dispatch(setStatus());
   };
 
   // redirect if logged

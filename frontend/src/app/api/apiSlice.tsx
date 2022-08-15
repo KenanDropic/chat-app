@@ -16,10 +16,8 @@ const mutex = new Mutex();
 const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
   fetchBaseQuery({
     baseUrl: "http://127.0.0.1:5000/",
-    // credentials: "include",
     prepareHeaders(headers, { getState, endpoint }) {
       const accessToken: string = (getState() as any).auth.atk;
-
       headers.set("authorization", `Bearer ${accessToken}`);
 
       return headers;

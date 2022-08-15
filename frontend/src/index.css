@@ -42,7 +42,6 @@
     align-items: center;
     justify-content: center;
   }
-  
   .loadingSpinner {
     width: 64px;
     height: 64px;
@@ -64,3 +63,5 @@
       transform: rotate(360deg);
     }
   }
+
+  

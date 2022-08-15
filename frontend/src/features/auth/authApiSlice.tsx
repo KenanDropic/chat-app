@@ -48,14 +48,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
           dispatch(setUser(data));
 
           // connect socket client to socket server
-          const socket = io("http://localhost:5000", {
-            extraHeaders: {
-              authorization: localStorage.getItem("tk")
-                ? (localStorage.getItem("tk") as string)
-                : "",
-            },
-          });
-          dispatch(setSocket(socket));
+          // const socket = io("http://localhost:5000", {
+          //   extraHeaders: {
+          //     authorization: localStorage.getItem("tk")
+          //       ? (localStorage.getItem("tk") as string)
+          //       : "",
+          //   },
+          // });
+          // dispatch(setSocket(socket));
         } catch (error) {}
       },
     }),

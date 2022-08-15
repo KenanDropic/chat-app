@@ -9,14 +9,13 @@ import { PageMetaDto } from 'src/pagination/dto/page-meta.dto';
 import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
 import { PageDto } from 'src/pagination/dto/page.dto';
 import { Repository } from 'typeorm';
-import { UserDto } from './dto/user.dto';
 import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  async find(query: PageOptionsDto): Promise<PageDto<UserDto>> {
+  async find(query: PageOptionsDto): Promise<PageDto<User>> {
     const users = this.repo.createQueryBuilder('users');
 
     users.skip(query.skip).take(query.take);

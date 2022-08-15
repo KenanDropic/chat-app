@@ -3,11 +3,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Dashboard, Private, Unauthorized } from "./components";
 import { Authentication } from "./pages";
-import { socket, SocketContext } from "./utilities/socket/connection";
 
 const App = () => {
   return (
-    <SocketContext.Provider value={socket}>
+    <>
       <Routes>
         <Route path="/" element={<Authentication />} />
         <Route element={<Private allowedRoles={["admin", "user"]} />}>
@@ -22,7 +21,7 @@ const App = () => {
         pauseOnFocusLoss={false}
         theme="colored"
       />
-    </SocketContext.Provider>
+    </>
   );
 };
 
