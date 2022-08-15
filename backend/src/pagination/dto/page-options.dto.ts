@@ -13,9 +13,9 @@ export class PageOptionsDto {
   @Min(1)
   @Max(50)
   @IsOptional()
-  take?: number = 10;
+  take?: number = 20;
 
-  @Transform(({ obj }) => (obj.page - 1) * obj.take)
+  @Transform(({ obj }) => console.log(obj))
   @IsInt()
   @IsOptional()
   @Min(0)

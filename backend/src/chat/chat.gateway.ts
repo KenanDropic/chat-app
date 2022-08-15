@@ -1,22 +1,22 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
 import { Server, Socket } from 'socket.io';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException } from '@nestjs/common';
 import { UserPassportPayload } from 'src/auth/types';
 import { User } from 'src/users/user.entity';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { UserDto } from 'src/users/dto/user.dto';
+import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
+import { RoomsService } from './rooms.service';
+import { RoomDto } from './dto/room.dto';
+import { PageDto } from 'src/pagination/dto/page.dto';
+import { Room } from './entities/room.entity';
+import { Query } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -28,12 +28,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly chatService: ChatService,
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly roomsService: RoomsService,
   ) {}
 
   @WebSocketServer()
   server: Server;
-
-  title: string[] = [];
 
   async handleConnection(socket: Socket, ...args: any[]) {
     const decodedToken = this.jwtService.decode(
@@ -51,41 +50,33 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!user) {
       return this.chatService.disconnect(socket);
     }
-    this.title.push('Value: ' + Math.random().toString());
-    this.server.emit('Message', this.title);
+
     socket.data.user = user;
+    const rooms = await this.roomsService.getUserRooms(user.id, {
+      page: 1,
+      take: 10,
+    });
+
+    // only emit rooms to the specific connected client
+    return this.server.to(socket.id).emit('rooms', rooms);
   }
-  handleDisconnect(socket: Socket, ...args: any[]) {
+
+  async handleDisconnect(socket: Socket, ...args: any[]) {
     socket.disconnect();
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any) {
-    this.server.emit('message', 'test');
+  @SubscribeMessage('createRoom')
+  async createRoom(socket: Socket, room: any): Promise<RoomDto> {
+    return this.roomsService.createRoom(room, socket.data.user);
   }
 
-  @SubscribeMessage('createChat')
-  create(@MessageBody() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
-  }
+  @SubscribeMessage('paginateRoom')
+  async getPaginatedUserRooms(socket: Socket, query: PageOptionsDto) {
+    const rooms = await this.roomsService.getUserRooms(
+      socket.data.user.id,
+      query,
+    );
 
-  @SubscribeMessage('findAllChat')
-  findAll() {
-    return this.chatService.findAll();
-  }
-
-  @SubscribeMessage('findOneChat')
-  findOne(@MessageBody() id: number) {
-    return this.chatService.findOne(id);
-  }
-
-  @SubscribeMessage('updateChat')
-  update(@MessageBody() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(updateChatDto.id, updateChatDto);
-  }
-
-  @SubscribeMessage('removeChat')
-  remove(@MessageBody() id: number) {
-    return this.chatService.remove(id);
+    return this.server.to(socket.id).emit('rooms', rooms);
   }
 }

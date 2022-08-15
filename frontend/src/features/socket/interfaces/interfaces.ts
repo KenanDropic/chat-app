@@ -10,8 +10,10 @@ interface Meta {
   page: number;
   take: number;
   itemCount: number;
+  pageCount: number;
   previosPage: number | boolean;
   nextPage: number | boolean;
+  skip: number;
 }
 
 export type { Room, Meta };
