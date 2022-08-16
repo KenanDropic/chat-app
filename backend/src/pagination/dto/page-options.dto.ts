@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class PageOptionsDto {
   @Type(() => Number)
@@ -21,4 +21,8 @@ export class PageOptionsDto {
   @Min(0)
   @Max(50)
   skip?: number = (this.page - 1) * this.take;
+
+  @IsOptional()
+  @IsString()
+  username?: string = '';
 }

@@ -33,6 +33,7 @@ export class SerializeInterceptor implements NestInterceptor {
         if (reqPath === '/users' && reqMeth === 'GET') {
           data.data.map((user: User) => {
             delete user.password;
+            delete user.hashedRT;
           });
           return data;
         }

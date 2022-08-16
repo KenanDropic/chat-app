@@ -20,6 +20,12 @@ export class UsersService {
 
     users.skip(query.skip).take(query.take);
 
+    if (query.username !== '') {
+      users.where('users.username like :name', {
+        name: `%${query.username}%`,
+      });
+    }
+
     if (!users) throw new NotFoundException('Users not found');
 
     const itemCount = await users.getCount();
