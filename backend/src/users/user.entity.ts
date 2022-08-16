@@ -37,5 +37,6 @@ export class User {
   async hashPassword(): Promise<void> {
     const salt: string = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    this.email.toLowerCase();
   }
 }
