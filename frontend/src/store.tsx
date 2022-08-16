@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import globalReducer from "./features/global/globalSlice";
 import authReducer from "./features/auth/authSlice";
 import socketReducer from "./features/socket/socketSlice";
+import usersReducer from "./features/users/usersSlice";
 import { apiSlice } from "./app/api/apiSlice";
 
 export const store = configureStore({
@@ -9,13 +10,18 @@ export const store = configureStore({
     global: globalReducer,
     auth: authReducer,
     socket: socketReducer,
+    users: usersReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: ["socket/setSocket"],
-        ignoredPaths: ["socket.socket"],
+        ignoredPaths: [
+          "socket.socket",
+          "socket.currentRoom.created_at",
+          "socket.currentRoom.updated_at",
+        ],
       },
     }).concat(apiSlice.middleware),
   devTools: true,
