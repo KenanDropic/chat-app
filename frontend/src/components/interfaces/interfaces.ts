@@ -1,3 +1,6 @@
+import { MutableRefObject } from "react";
+import { User } from "../../features/auth/interfaces/interfaces";
+
 interface FormProps {
   status: string;
 }
@@ -10,4 +13,14 @@ interface Roles {
   allowedRoles: string[];
 }
 
-export type { FormProps, FormValues, Roles };
+interface CreateRoomValues {
+  name: string;
+  description: string;
+  users?: (string | User)[];
+}
+
+interface CreateRoomProps {
+  refrence: MutableRefObject<any>;
+}
+
+export type { FormProps, FormValues, Roles, CreateRoomValues, CreateRoomProps };
