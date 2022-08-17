@@ -23,9 +23,12 @@ const authSlice = createSlice({
       state.data = action.payload.data;
       state.meta = action.payload.meta;
     },
+    setSearchword: (state, action: PayloadAction<string>) => {
+      state.searchKeyword = action.payload;
+    },
   },
 });
 
-export const { setUsers } = authSlice.actions;
+export const { setUsers, setSearchword } = authSlice.actions;
 
 export default authSlice.reducer;
