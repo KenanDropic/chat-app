@@ -13,10 +13,6 @@ import { UserPassportPayload } from 'src/auth/types';
 import { User } from 'src/users/user.entity';
 import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
 import { RoomsService } from './rooms.service';
-import { RoomDto } from './dto/room.dto';
-import { PageDto } from 'src/pagination/dto/page.dto';
-import { Room } from './entities/room.entity';
-import { Query } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -66,8 +62,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('createRoom')
-  async createRoom(socket: Socket, room: any): Promise<RoomDto> {
-    return this.roomsService.createRoom(room, socket.data.user);
+  async createRoom(socket: Socket, roomData: any) {
+    return this.roomsService.createRoom(roomData, socket.data.user);
   }
 
   @SubscribeMessage('paginateRoom')
