@@ -13,6 +13,11 @@ import { UserPassportPayload } from 'src/auth/types';
 import { User } from 'src/users/user.entity';
 import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
 import { RoomsService } from './rooms.service';
+import { PageDto } from 'src/pagination/dto/page.dto';
+import { Room } from './entities/room.entity';
+import { RoomDataDto } from './dto/room-data.dto';
+import { ConnectedUserService } from './connected-user.service';
+import { ConnectedUser } from './entities/connected-user-entity';
 
 @WebSocketGateway({
   cors: {
@@ -25,6 +30,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly roomsService: RoomsService,
+    private readonly connectedUserService: ConnectedUserService,
   ) {}
 
   @WebSocketServer()
@@ -58,17 +64,37 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleDisconnect(socket: Socket, ...args: any[]) {
-    socket.disconnect();
+    this.chatService.disconnect(socket);
   }
 
   @SubscribeMessage('createRoom')
-  async createRoom(socket: Socket, roomData: any) {
-    return this.roomsService.createRoom(roomData, socket.data.user);
+  async createRoom(socket: Socket, roomData: RoomDataDto): Promise<boolean> {
+    const created = await this.roomsService.createRoom(
+      roomData,
+      socket.data.user,
+    );
+
+    for (const user of created.users) {
+      const connections: ConnectedUser[] =
+        await this.connectedUserService.findByUser(user);
+
+      const rooms = await this.roomsService.getUserRooms(user.id, {
+        page: 1,
+        take: 10,
+      });
+
+      for (const connection of connections) {
+        return this.server.to(connection.socketId).emit('rooms', rooms);
+      }
+    }
   }
 
   @SubscribeMessage('paginateRoom')
-  async getPaginatedUserRooms(socket: Socket, query: PageOptionsDto) {
-    const rooms = await this.roomsService.getUserRooms(
+  async getPaginatedUserRooms(
+    socket: Socket,
+    query: PageOptionsDto,
+  ): Promise<boolean> {
+    const rooms: PageDto<Room> = await this.roomsService.getUserRooms(
       socket.data.user.id,
       query,
     );

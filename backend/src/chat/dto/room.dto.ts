@@ -1,13 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import {
-  IsArray,
-  IsDate,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
 import { UserDto } from 'src/users/dto/user.dto';
-import { User } from 'src/users/user.entity';
 
 export class RoomDto {
   @Transform(({ obj }) => console.log('Transform OBJECT:', obj))

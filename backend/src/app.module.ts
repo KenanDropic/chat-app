@@ -9,8 +9,8 @@ import { User } from './users/user.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { JWTGuard } from './auth/guards';
 import { ChatModule } from './chat/chat.module';
-import { Chat } from './chat/entities/chat.entity';
 import { Room } from './chat/entities/room.entity';
+import { ConnectedUser } from './chat/entities/connected-user-entity';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { Room } from './chat/entities/room.entity';
           username: config.get<string>('DB_USER'),
           password: config.get<string>('DB_PASS'),
           database: config.get<string>('DB_NAME'),
-          entities: [User, Chat, Room],
+          entities: [User, Room, ConnectedUser],
           synchronize: true,
         };
       },

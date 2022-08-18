@@ -1,3 +1,4 @@
+import { UserI } from 'src/users/dto/user.interface';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -17,5 +18,5 @@ export class ConnectedUser {
 
   @OneToOne(() => User)
   @JoinColumn()
-  user: User;
+  user: UserI;
 }

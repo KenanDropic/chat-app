@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageMetaDto } from 'src/pagination/dto/page-meta.dto';
 import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
 import { PageDto } from 'src/pagination/dto/page.dto';
-import { UserDto } from 'src/users/dto/user.dto';
+import { UserI } from 'src/users/dto/user.interface';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
+import { RoomDataDto } from './dto/room-data.dto';
 import { RoomDto } from './dto/room.dto';
 import { Room } from './entities/room.entity';
 
@@ -15,8 +16,8 @@ export class RoomsService {
     @InjectRepository(Room) private readonly repo: Repository<Room>,
   ) {}
 
-  async createRoom(roomData: any, creator: User): Promise<any> {
-    const user = {
+  async createRoom(roomData: RoomDataDto, creator: UserI): Promise<RoomDto> {
+    const user: UserI = {
       ...creator,
     };
     delete user.password;
@@ -36,8 +37,9 @@ export class RoomsService {
   ): Promise<PageDto<Room>> {
     const rooms = this.repo
       .createQueryBuilder('rooms')
-      .leftJoinAndSelect('rooms.users', 'user')
+      .leftJoin('rooms.users', 'user')
       .where('user.id = :userId', { userId })
+      .leftJoinAndSelect('rooms.users', 'all_users')
       .skip(query.skip)
       .take(query.take)
       .orderBy('rooms.updated_at', 'DESC');
@@ -62,11 +64,5 @@ export class RoomsService {
     });
 
     return new PageDto(entities, pageMeta);
-  }
-
-  async addCreatorToRoom(room: RoomDto, creator: UserDto): Promise<RoomDto> {
-    // console.log('CREATOR', room, creator);
-    room.users.push(creator);
-    return room;
   }
 }

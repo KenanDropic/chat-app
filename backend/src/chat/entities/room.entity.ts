@@ -20,7 +20,7 @@ export class Room {
   @Column({ nullable: true })
   description: string;
 
-  @ManyToMany(() => User, (user) => user.rooms)
+  @ManyToMany(() => User)
   @JoinTable()
   users: User[];
 

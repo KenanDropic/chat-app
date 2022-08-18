@@ -15,7 +15,7 @@ export class PageOptionsDto {
   @IsOptional()
   take?: number = 20;
 
-  @Transform(({ obj }) => console.log(obj))
+  // @Transform(({ obj }) => console.log(obj))
   @IsInt()
   @IsOptional()
   @Min(0)

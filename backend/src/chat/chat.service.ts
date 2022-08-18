@@ -1,10 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { ConnectedUserService } from './connected-user.service';
 
 @Injectable()
 export class ChatService {
-  disconnect(socket: Socket) {
-    socket.emit('Error', new UnauthorizedException());
+  constructor(private readonly connectedUserService: ConnectedUserService) {}
+  async disconnect(socket: Socket) {
+    // remove connection from DB
+    await this.connectedUserService.deleteBySocketId(socket.id);
     socket.disconnect();
   }
 }
