@@ -9,13 +9,24 @@ import { RoomsService } from './rooms.service';
 import { Room } from './entities/room.entity';
 import { ConnectedUserService } from './connected-user.service';
 import { ConnectedUser } from './entities/connected-user-entity';
+import { JoinedRoom } from './entities/joined-room.entity';
+import { Message } from './entities/message.entity';
+import { JoinedRoomService } from './joined-room.service';
+import { MessagesService } from './messages.service';
 
 @Module({
   imports: [
     UsersModule,
     JwtModule.register({}),
-    TypeOrmModule.forFeature([User, Room, ConnectedUser]),
+    TypeOrmModule.forFeature([User, Room, ConnectedUser, JoinedRoom, Message]),
   ],
-  providers: [ChatGateway, ChatService, RoomsService, ConnectedUserService],
+  providers: [
+    ChatGateway,
+    ChatService,
+    RoomsService,
+    ConnectedUserService,
+    JoinedRoomService,
+    MessagesService,
+  ],
 })
 export class ChatModule {}

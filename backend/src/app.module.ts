@@ -11,6 +11,8 @@ import { JWTGuard } from './auth/guards';
 import { ChatModule } from './chat/chat.module';
 import { Room } from './chat/entities/room.entity';
 import { ConnectedUser } from './chat/entities/connected-user-entity';
+import { JoinedRoom } from './chat/entities/joined-room.entity';
+import { Message } from './chat/entities/message.entity';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { ConnectedUser } from './chat/entities/connected-user-entity';
           username: config.get<string>('DB_USER'),
           password: config.get<string>('DB_PASS'),
           database: config.get<string>('DB_NAME'),
-          entities: [User, Room, ConnectedUser],
+          entities: [User, Room, ConnectedUser, JoinedRoom, Message],
           synchronize: true,
         };
       },

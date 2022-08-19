@@ -10,6 +10,8 @@ import * as bcrypt from 'bcryptjs';
 import { Role } from 'src/utils/role.enum';
 import { Room } from 'src/chat/entities/room.entity';
 import { ConnectedUser } from 'src/chat/entities/connected-user-entity';
+import { JoinedRoom } from 'src/chat/entities/joined-room.entity';
+import { Message } from 'src/chat/entities/message.entity';
 
 @Entity()
 export class User {
@@ -36,6 +38,12 @@ export class User {
 
   @OneToMany(() => ConnectedUser, (connection) => connection.user)
   connections: ConnectedUser;
+
+  @OneToMany(() => JoinedRoom, (joinedRoom) => joinedRoom.room)
+  joinedRooms: JoinedRoom[];
+
+  @OneToMany(() => Message, (message) => message.user)
+  messages: Message[];
 
   // this will happen if password get's modified,that by default gets checked by postgres.
   @BeforeInsert()
