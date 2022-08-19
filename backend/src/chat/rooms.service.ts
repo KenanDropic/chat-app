@@ -4,7 +4,6 @@ import { PageMetaDto } from 'src/pagination/dto/page-meta.dto';
 import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
 import { PageDto } from 'src/pagination/dto/page.dto';
 import { UserI } from 'src/users/dto/user.interface';
-import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { RoomDataDto } from './dto/room-data.dto';
 import { RoomDto } from './dto/room.dto';
@@ -44,10 +43,18 @@ export class RoomsService {
       .take(query.take)
       .orderBy('rooms.updated_at', 'DESC');
 
+    if (query.roomname) {
+      rooms.andWhere('rooms.name ilike :name', {
+        name: `%${query.roomname}%`,
+      });
+    }
+
     if (!rooms) throw new NotFoundException();
 
     const itemCount = await rooms.getCount();
     const { entities } = await rooms.getRawAndEntities();
+
+    // console.log(entities);
 
     const pageMeta: PageMetaDto = new PageMetaDto({
       itemCount,
@@ -64,5 +71,12 @@ export class RoomsService {
     });
 
     return new PageDto(entities, pageMeta);
+  }
+
+  async getRoom(roomId: number): Promise<RoomDto> {
+    return await this.repo
+      .createQueryBuilder('room')
+      .where('room.id = :roomId', { roomId })
+      .getOne();
   }
 }

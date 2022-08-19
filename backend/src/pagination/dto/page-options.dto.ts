@@ -13,7 +13,7 @@ export class PageOptionsDto {
   @Min(1)
   @Max(50)
   @IsOptional()
-  take?: number = 20;
+  take?: number = 8;
 
   // @Transform(({ obj }) => console.log(obj))
   @IsInt()
@@ -25,4 +25,8 @@ export class PageOptionsDto {
   @IsOptional()
   @IsString()
   username?: string = '';
+
+  @IsOptional()
+  @IsString()
+  roomname?: string = '';
 }
