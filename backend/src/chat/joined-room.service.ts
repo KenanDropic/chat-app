@@ -1,0 +1,35 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserDto } from 'src/users/dto/user.dto';
+import { DeleteResult, Repository } from 'typeorm';
+import { JoinedRoomDto } from './dto/joined-room.dto';
+import { RoomDto } from './dto/room.dto';
+import { JoinedRoom } from './entities/joined-room.entity';
+
+@Injectable()
+export class JoinedRoomService {
+  constructor(
+    @InjectRepository(JoinedRoom)
+    private readonly repo: Repository<JoinedRoom>,
+  ) {}
+
+  async create(joinedRoomUser: JoinedRoomDto): Promise<JoinedRoomDto> {
+    return this.repo.save(joinedRoomUser);
+  }
+
+  async findByUser(user: UserDto): Promise<JoinedRoomDto[]> {
+    return this.repo.findBy({ user });
+  }
+
+  async findByRoom(room: RoomDto): Promise<JoinedRoom[]> {
+    return this.repo.findBy({ room });
+  }
+
+  async deleteBySocketId(socketId: string): Promise<DeleteResult> {
+    return this.repo.delete({ socketId });
+  }
+
+  async deleteAll() {
+    await this.repo.createQueryBuilder().delete().execute();
+  }
+}
