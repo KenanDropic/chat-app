@@ -19,4 +19,10 @@ interface Meta {
   skip: number;
 }
 
-export type { Room, Meta };
+interface OnlineUser {
+  id: number;
+  socketId: string;
+  user: User;
+}
+
+export type { Room, Meta, OnlineUser };

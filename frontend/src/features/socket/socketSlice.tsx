@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Meta, Room } from "./interfaces/interfaces";
+import { Meta, OnlineUser, Room } from "./interfaces/interfaces";
 
 interface InitialState {
   data: Room[];
@@ -8,6 +8,7 @@ interface InitialState {
   currentRoom: Room | null;
   isRoomCreated: boolean;
   roomname: string;
+  onlineUsers: OnlineUser[];
 }
 
 const initialState: InitialState = {
@@ -25,6 +26,7 @@ const initialState: InitialState = {
   currentRoom: null,
   isRoomCreated: false,
   roomname: "",
+  onlineUsers: [],
 };
 
 const socketSlice = createSlice({
@@ -54,6 +56,9 @@ const socketSlice = createSlice({
     setRoomname: (state, action: PayloadAction<string>) => {
       state.roomname = action.payload;
     },
+    setOnlineUsers: (state, action: PayloadAction<OnlineUser[]>) => {
+      state.onlineUsers = action.payload;
+    },
   },
 });
 
@@ -65,6 +70,7 @@ export const {
   setCurrentRoom,
   setIsRoomCreated,
   setRoomname,
+  setOnlineUsers,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;
