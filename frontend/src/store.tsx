@@ -3,6 +3,7 @@ import globalReducer from "./features/global/globalSlice";
 import authReducer from "./features/auth/authSlice";
 import socketReducer from "./features/socket/socketSlice";
 import usersReducer from "./features/users/usersSlice";
+import messagesReducer from "./features/messages/messagesSlice";
 import { apiSlice } from "./app/api/apiSlice";
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     auth: authReducer,
     socket: socketReducer,
     users: usersReducer,
+    messages: messagesReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
