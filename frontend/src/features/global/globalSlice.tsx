@@ -4,12 +4,14 @@ interface InitialState {
   status: string;
   showPassword: boolean;
   showModal: boolean;
+  showSidebar: boolean;
 }
 
 const initialState: InitialState = {
   status: "signin",
   showPassword: false,
   showModal: false,
+  showSidebar: false,
 };
 
 const globalSlice = createSlice({
@@ -25,9 +27,13 @@ const globalSlice = createSlice({
     setShowModal: (state) => {
       state.showModal = !state.showModal;
     },
+    setShowSidebar: (state) => {
+      state.showSidebar = !state.showSidebar;
+    },
   },
 });
 
-export const { setStatus, setShowPassword, setShowModal } = globalSlice.actions;
+export const { setStatus, setShowPassword, setShowModal, setShowSidebar } =
+  globalSlice.actions;
 
 export default globalSlice.reducer;
