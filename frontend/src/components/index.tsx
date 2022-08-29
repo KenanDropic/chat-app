@@ -4,3 +4,8 @@ export { default as Spinner } from "./Spinner";
 export { default as Dashboard } from "./Dashboard";
 export { default as Private } from "./Private";
 export { default as Unauthorized } from "./Unauthorized";
+export { default as CreateRoom } from "./CreateRoom";
+export { default as Chatrooms } from "./Chatrooms";
+export { default as SelectedChatroom } from "./SelectedChatroom";
+export { default as Sidebar } from "./Sidebar";
+export { default as Messages } from "./Messages";

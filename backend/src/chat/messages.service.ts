@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageMetaDto } from 'src/pagination/dto/page-meta.dto';
 import { PageOptionsDto } from 'src/pagination/dto/page-options.dto';
+import { PageDto } from 'src/pagination/dto/page.dto';
 import { Repository } from 'typeorm';
 import { MessageDto } from './dto/message.dto';
 import { Message } from './entities/message.entity';
@@ -14,12 +15,11 @@ export class MessagesService {
     private readonly repo: Repository<Message>,
   ) {}
 
-  async create(message: MessageDto): Promise<MessageDto> {
+  async create(message: MessageDto) {
     return this.repo.save(message);
   }
 
   async findMessagesForRoom(room: Room, query: PageOptionsDto) {
-    // TO DO
     const messagesForRoom = this.repo
       .createQueryBuilder('messages')
       .leftJoin('messages.room', 'room')
@@ -39,6 +39,6 @@ export class MessagesService {
       query,
     });
 
-    console.log('Entities:', entities);
+    return new PageDto(entities, pageMeta);
   }
 }
