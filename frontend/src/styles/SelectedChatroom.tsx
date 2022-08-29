@@ -10,6 +10,10 @@ export const ContentWrapper = styled("div")(({ theme }) => ({
   padding: "15px 35px",
   height: "84.5%",
   overflowY: "scroll",
+  display: "flex",
+  flexDirection: "column",
+  scrollbarWidth: "thin",
+  scrollbarColor: "lightgray darkgray",
 }));
 
 export const FooterWrapper = styled("footer")(({ theme }) => ({
