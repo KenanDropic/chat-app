@@ -124,9 +124,9 @@ export class ChatGateway
   }
 
   @SubscribeMessage('joinRoom')
-  async joinRoom(socket: Socket, room: Room) {
+  async joinRoom(socket: Socket, room: Room): Promise<void> {
     const messages = await this.messagesService.findMessagesForRoom(room, {
-      take: 10,
+      take: 20,
       page: 1,
     });
 
@@ -142,16 +142,23 @@ export class ChatGateway
   }
 
   @SubscribeMessage('leaveRoom')
-  async onLeaveRoom(socket: Socket) {
+  async onLeaveRoom(socket: Socket): Promise<void> {
     // remove connection from joinedRooms
     await this.joinedRoomService.deleteBySocketId(socket.id);
   }
 
   @SubscribeMessage('addMessage')
   async addMessage(socket: Socket, message: MessageDto) {
+    const userWithoutPassword = {
+      ...socket.data.user,
+    };
+
+    delete userWithoutPassword.hashedRT;
+    delete userWithoutPassword.password;
+
     const createdMessage = await this.messagesService.create({
       ...message,
-      user: socket.data.user,
+      user: userWithoutPassword,
     });
 
     const room = await this.roomsService.getRoom(createdMessage.room.id);
@@ -160,13 +167,17 @@ export class ChatGateway
       room,
     );
 
-    // TO DO - send new messages to all joined Users of the room (currently online)
+    for (const user of joinedUsers) {
+      this.server.to(user.socketId).emit('messageAdded', createdMessage);
+    }
   }
 
   @SubscribeMessage('findConnected')
   async findConnectedUsers(socket: Socket): Promise<boolean> {
     const connectedUsers: ConnectedUser[] =
       await this.connectedUserService.findConnectedUsers(socket.id);
+
+    // console.log('Connected users:', connectedUsers.length);
 
     return this.server.to(socket.id).emit('connectedUsers', connectedUsers);
   }

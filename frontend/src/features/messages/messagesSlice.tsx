@@ -5,7 +5,6 @@ import { Meta } from "../socket/interfaces/interfaces";
 interface InitialState {
   data: Message[];
   meta: Meta;
-  isAdded: boolean;
 }
 
 const initialState: InitialState = {
@@ -19,7 +18,6 @@ const initialState: InitialState = {
     pageCount: 1,
     skip: 0,
   },
-  isAdded: false,
 };
 
 const messagesSlice = createSlice({
@@ -37,12 +35,13 @@ const messagesSlice = createSlice({
     setTake: (state, action: PayloadAction<number>) => {
       state.meta.take = action.payload;
     },
-    setIsAdded: (state, action: PayloadAction<boolean>) => {
-      state.isAdded = action.payload;
+    pushNewMessage: (state, action: PayloadAction<Message>) => {
+      state.data.push(action.payload);
     },
   },
 });
 
-export const { setMessages, setPage, setTake } = messagesSlice.actions;
+export const { setMessages, setPage, setTake, pushNewMessage } =
+  messagesSlice.actions;
 
 export default messagesSlice.reducer;
