@@ -24,7 +24,8 @@ export class MessagesService {
       .createQueryBuilder('messages')
       .leftJoin('messages.room', 'room')
       .where('room.id = :roomId', { roomId: room.id })
-      .leftJoinAndSelect('messages.user', 'user')
+      .leftJoin('messages.user', 'user')
+      .addSelect(['user.id', 'user.username', 'user.email', 'user.role'])
       .skip(query.skip)
       .take(query.take)
       .orderBy('messages.created_at', 'ASC');
