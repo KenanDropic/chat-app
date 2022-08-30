@@ -1,11 +1,12 @@
 import React, { ChangeEvent } from "react";
-import { setShowSidebar } from "../features/global/globalSlice";
+import { setShowModal, setShowSidebar } from "../features/global/globalSlice";
 import { useAppDispatch, useAppSelector } from "../features/hooks/hooks";
 import SearchIcon from "@mui/icons-material/Search";
 import { RefrenceRoomProps } from "./interfaces/interfaces";
 import Chatrooms from "./Chatrooms";
 import TextFieldIcon from "./TextFieldIcon";
 import LogoutIcon from "@mui/icons-material/Logout";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useLogoutMutation } from "../features/auth/authApiSlice";
 import { NavigateFunction, useNavigate } from "react-router-dom";
@@ -13,6 +14,8 @@ import Spinner from "./Spinner";
 import SelectedChatroom from "./SelectedChatroom";
 import useDebounce from "../utilities/customHooks/useDebounce";
 import { setRoomname } from "../features/socket/socketSlice";
+import { FlexDiv } from "../styles/Sidebarwrapper";
+import { CreateRoom } from ".";
 
 const Sidebar: React.FC<RefrenceRoomProps> = ({ refrence, data }) => {
   const navigate: NavigateFunction = useNavigate();
@@ -43,6 +46,7 @@ const Sidebar: React.FC<RefrenceRoomProps> = ({ refrence, data }) => {
     <Spinner />
   ) : (
     <div>
+      <CreateRoom refrence={refrence} />
       <nav className={showSidebar ? "sidebar" : "sidebar close"}>
         <header>
           <div className="text logo-text">
@@ -74,6 +78,7 @@ const Sidebar: React.FC<RefrenceRoomProps> = ({ refrence, data }) => {
                 transition: "all 0.3s ease",
                 color: "#707070",
                 marginX: "14px",
+                marginBottom: "25px",
               }}
               onChange={(e: ChangeEvent) => handleChange(e)}
             />
@@ -81,25 +86,45 @@ const Sidebar: React.FC<RefrenceRoomProps> = ({ refrence, data }) => {
           </div>
 
           <div className="bottom-content" title="Logout">
-            <LogoutIcon
-              sx={{
-                fontSize: "30px",
-                margin: "5px 5px 5px 0px",
-                color: "#707070",
-                // width: "66%",
-                height: "60%",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-              onClick={handleLogoutClick}
-            />
-            <span className="text nav-text">Logout</span>
+            <FlexDiv>
+              <AddCircleIcon
+                sx={{
+                  fontSize: "30px",
+                  margin: "5px 5px 5px 0px",
+                  color: "#707070",
+                  // width: "66%",
+                  height: "60%",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+                onClick={() => dispatch(setShowModal())}
+              />
+              <span className="text nav-text">Create</span>
+            </FlexDiv>
+            <FlexDiv>
+              <LogoutIcon
+                sx={{
+                  fontSize: "30px",
+                  margin: "5px 5px 5px 0px",
+                  color: "#707070",
+                  // width: "66%",
+                  height: "60%",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+                onClick={handleLogoutClick}
+              />
+              <span className="text nav-text">Logout</span>
+            </FlexDiv>
           </div>
         </div>
       </nav>
       <section className="home">
-        {currentRoom === null && <div className="text">Select Chatroom</div>}
-        {currentRoom !== null && <SelectedChatroom refrence={refrence} />}
+        {currentRoom === null ? (
+          <div className="text">Select Chatroom</div>
+        ) : (
+          <SelectedChatroom refrence={refrence} />
+        )}
       </section>
     </div>
   );

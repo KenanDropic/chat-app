@@ -19,6 +19,7 @@ import { useLazyGetUsersQuery } from "../features/users/usersApiSlice";
 import { setSearchword } from "../features/users/usersSlice";
 import useDebounce from "../utilities/customHooks/useDebounce";
 import { CreateRoomValues, RefrenceRoomProps } from "./interfaces/interfaces";
+import CloseIcon from "@mui/icons-material/Close";
 import Spinner from "./Spinner";
 
 const CreateRoom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
@@ -72,15 +73,24 @@ const CreateRoom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
 
   return (
     <>
-      <Button variant="outlined" onClick={() => dispatch(setShowModal())}>
-        Create Room
-      </Button>
       <Dialog
         open={showModal}
         onClose={() => dispatch(setShowModal())}
         fullWidth
       >
-        <DialogTitle textAlign="center">Create Chatroom</DialogTitle>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          Create Chatroom
+          <CloseIcon
+            sx={{ cursor: "pointer" }}
+            onClick={() => dispatch(setShowModal())}
+          />
+        </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
@@ -161,9 +171,17 @@ const CreateRoom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
                 </div>
               </FormControl>
             </FormGroup>
-            <Button variant="outlined" type="submit">
-              Create Room
-            </Button>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Button variant="outlined" type="submit">
+                Create Chatroom
+              </Button>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
