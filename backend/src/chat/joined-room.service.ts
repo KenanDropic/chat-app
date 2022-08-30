@@ -22,7 +22,15 @@ export class JoinedRoomService {
   }
 
   async findByRoom(room: RoomDto): Promise<JoinedRoom[]> {
-    return this.repo.findBy({ room });
+    const joinedUsers = this.repo
+      .createQueryBuilder('joinedUsers')
+      .leftJoin('joinedUsers.room', 'room')
+      .where('room.id = :roomId', { roomId: room.id })
+      .getMany();
+    // .leftJoin('joinedUsers.user', 'user')
+    // .addSelect(['user.id', 'user.email', 'user.role', 'user.username'])
+
+    return await joinedUsers;
   }
 
   async deleteBySocketId(socketId: string): Promise<DeleteResult> {

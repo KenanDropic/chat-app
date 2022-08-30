@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../features/hooks/hooks";
 import {
   Message,
@@ -22,12 +22,15 @@ import {
 import { MessageSpanWrapper, MessageWrapper } from "../styles/MessagesWrapper";
 
 const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
+  const messagesEndRef = useRef<any>();
+
   const dispatch = useAppDispatch();
   const { currentRoom, onlineUsers, onlineCount } = useAppSelector(
     (state) => state.socket
   );
   const { data: messages } = useAppSelector((state) => state.messages);
   const { user } = useAppSelector((state) => state.auth);
+  const { scroll } = useAppSelector((state) => state.global);
 
   const {
     register,
@@ -62,6 +65,10 @@ const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
   useEffect(() => {
     pushMessages();
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView();
+  }, [scroll, messages]);
 
   const onSubmit = (data: SendMessage) => {
     const obj = {
@@ -126,6 +133,10 @@ const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
                 No messages currently
               </MessageSpanWrapper>
             )}
+            <div
+              style={{ height: "0%", padding: "0px", margin: "0px" }}
+              ref={(el) => (messagesEndRef.current = el)}
+            ></div>
           </ContentWrapper>
           <FooterWrapper>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -157,7 +168,10 @@ const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
                       <SendIcon onClick={() => console.log("clicked")} />
                     }
                   />
-                  <Button type="submit" />
+                  <Button
+                    type="submit"
+                    sx={{ height: "0px", padding: "0px" }}
+                  />
                 </FormControl>
               </FormGroup>
             </form>

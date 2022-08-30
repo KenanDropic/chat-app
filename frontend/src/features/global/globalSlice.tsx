@@ -1,10 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface InitialState {
   status: string;
   showPassword: boolean;
   showModal: boolean;
   showSidebar: boolean;
+  scroll: boolean;
 }
 
 const initialState: InitialState = {
@@ -12,6 +13,7 @@ const initialState: InitialState = {
   showPassword: false,
   showModal: false,
   showSidebar: false,
+  scroll: false,
 };
 
 const globalSlice = createSlice({
@@ -30,10 +32,18 @@ const globalSlice = createSlice({
     setShowSidebar: (state) => {
       state.showSidebar = !state.showSidebar;
     },
+    setScroll: (state, action: PayloadAction<boolean>) => {
+      state.scroll = action.payload;
+    },
   },
 });
 
-export const { setStatus, setShowPassword, setShowModal, setShowSidebar } =
-  globalSlice.actions;
+export const {
+  setStatus,
+  setShowPassword,
+  setShowModal,
+  setShowSidebar,
+  setScroll,
+} = globalSlice.actions;
 
 export default globalSlice.reducer;

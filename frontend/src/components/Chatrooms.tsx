@@ -1,5 +1,6 @@
 import { Pagination } from "@mui/material";
 import React, { ChangeEvent } from "react";
+import { setScroll } from "../features/global/globalSlice";
 import { useAppDispatch, useAppSelector } from "../features/hooks/hooks";
 import { Room } from "../features/socket/interfaces/interfaces";
 import { setCurrentRoom, setPage } from "../features/socket/socketSlice";
@@ -25,6 +26,9 @@ const Chatrooms: React.FC<Props> = ({ data, refrence }) => {
 
   // select room
   const selectRoom: (room: Room) => void = (room: Room) => {
+    // giving a signal that we should scroll to the bottom of the chat
+    dispatch(setScroll(true));
+    
     // emit leaveRoom before joining,so connections that are not viable anymore can be destroyed
     refrence.current.emit("leaveRoom", currentRoom);
 
