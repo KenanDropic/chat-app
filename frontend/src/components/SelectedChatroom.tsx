@@ -22,9 +22,10 @@ import {
 import { MessageSpanWrapper, MessageWrapper } from "../styles/MessagesWrapper";
 
 const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
-  const [count, setCount] = useState(0);
   const dispatch = useAppDispatch();
-  const { currentRoom, onlineUsers } = useAppSelector((state) => state.socket);
+  const { currentRoom, onlineUsers, onlineCount } = useAppSelector(
+    (state) => state.socket
+  );
   const { data: messages } = useAppSelector((state) => state.messages);
   const { user } = useAppSelector((state) => state.auth);
 
@@ -35,22 +36,9 @@ const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
     handleSubmit,
   } = useForm<SendMessage>({});
 
-  const countOnlineUsersInChatroom = () => {
-    let counting: number = 0;
-    currentRoom?.users.map((user) => {
-      onlineUsers.map((onlineUser) => {
-        if (onlineUser.user.id === user.id) {
-          counting++;
-          setCount(counting);
-        }
-      });
-    });
-  };
-
   const findMessagesForRoom = async () => {
     if (refrence.current !== null) {
       await refrence.current.on("messages", (...args: any) => {
-        // console.log("GET MESSAGES:", args[0]);
         dispatch(setMessages(args[0]));
       });
     }
@@ -66,12 +54,6 @@ const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
       dispatch(pushNewMessage(message));
     });
   };
-
-  useEffect(() => {
-    if (refrence.current !== null) {
-      countOnlineUsersInChatroom();
-    }
-  }, [refrence]);
 
   useEffect(() => {
     findMessagesForRoom();
@@ -96,7 +78,7 @@ const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
         <>
           <HeaderWrapper>
             <h3># {currentRoom.name}</h3>
-            <h3>Online {count}</h3>
+            <h3>Online {onlineCount}</h3>
           </HeaderWrapper>
           <hr />
           <ContentWrapper>

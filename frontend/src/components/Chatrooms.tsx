@@ -13,9 +13,10 @@ interface Props {
 const Chatrooms: React.FC<Props> = ({ data, refrence }) => {
   const dispatch = useAppDispatch();
   const {
-    meta: { page, take, pageCount },
+    meta: { page, pageCount },
   } = useAppSelector((state) => state.socket);
   const { showSidebar } = useAppSelector((state) => state.global);
+  const { currentRoom } = useAppSelector((state) => state.socket);
 
   // handle page change
   const handlePageChange = (event: ChangeEvent<unknown>, page: number) => {
@@ -24,7 +25,11 @@ const Chatrooms: React.FC<Props> = ({ data, refrence }) => {
 
   // select room
   const selectRoom: (room: Room) => void = (room: Room) => {
+    // emit leaveRoom before joining,so connections that are not viable anymore can be destroyed
+    refrence.current.emit("leaveRoom", currentRoom);
+
     // emit joinRoom event & set current room in redux state
+    refrence.current.emit("findConnected", room);
     refrence.current.emit("joinRoom", room);
     dispatch(setCurrentRoom(room));
   };

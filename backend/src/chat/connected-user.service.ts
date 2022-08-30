@@ -23,17 +23,23 @@ export class ConnectedUserService {
     return await users;
   }
 
-  async findConnectedUsers(socketId: string): Promise<ConnectedUser[]> {
+  async findConnectedUsers(
+    socketId: string,
+    room: any,
+  ): Promise<ConnectedUser[]> {
     const users: ConnectedUser[] = await this.repo
       .createQueryBuilder('connectedUser')
       .leftJoin('connectedUser.user', 'user')
-      .select([
-        'connectedUser',
-        'user.id',
-        'user.username',
-        'user.email',
-        'user.role',
-      ])
+      .where(`connectedUser.user IN(:...users)`, {
+        users: room.users.map((user: UserDto) => user.id),
+      })
+      // .select([
+      //   'connectedUser',
+      //   'user.id',
+      //   'user.username',
+      //   'user.email',
+      //   'user.role',
+      // ])
       // .where('connectedUser.socketId = :socketId', { socketId })
       .getMany();
 

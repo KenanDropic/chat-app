@@ -9,6 +9,7 @@ interface InitialState {
   isRoomCreated: boolean;
   roomname: string;
   onlineUsers: OnlineUser[];
+  onlineCount: number;
 }
 
 const initialState: InitialState = {
@@ -27,6 +28,7 @@ const initialState: InitialState = {
   isRoomCreated: false,
   roomname: "",
   onlineUsers: [],
+  onlineCount: 0,
 };
 
 const socketSlice = createSlice({
@@ -59,6 +61,9 @@ const socketSlice = createSlice({
     setOnlineUsers: (state, action: PayloadAction<OnlineUser[]>) => {
       state.onlineUsers = action.payload;
     },
+    setOnlineCount: (state, action: PayloadAction<number>) => {
+      state.onlineCount = action.payload;
+    },
   },
 });
 
@@ -71,6 +76,7 @@ export const {
   setIsRoomCreated,
   setRoomname,
   setOnlineUsers,
+  setOnlineCount,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

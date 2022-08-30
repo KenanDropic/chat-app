@@ -77,8 +77,8 @@ export class ChatGateway
     // save connection to DB
     await this.connectedUserService.create({ socketId: socket.id, user });
 
-    // find users that are online
-    this.findConnectedUsers(socket);
+    // // find users that are online
+    // this.findConnectedUsers(socket, room);
 
     // only emit rooms to the specific connected client
     return this.server.to(socket.id).emit('rooms', rooms);
@@ -173,12 +173,12 @@ export class ChatGateway
   }
 
   @SubscribeMessage('findConnected')
-  async findConnectedUsers(socket: Socket): Promise<boolean> {
+  async findConnectedUsers(socket: Socket, room: Room): Promise<boolean> {
     const connectedUsers: ConnectedUser[] =
-      await this.connectedUserService.findConnectedUsers(socket.id);
+      await this.connectedUserService.findConnectedUsers(socket.id, room);
 
-    // console.log('Connected users:', connectedUsers.length);
-
-    return this.server.to(socket.id).emit('connectedUsers', connectedUsers);
+    return this.server
+      .to(socket.id)
+      .emit('connectedUsers', connectedUsers.length);
   }
 }
