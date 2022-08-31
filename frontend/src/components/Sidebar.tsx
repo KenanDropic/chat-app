@@ -15,7 +15,8 @@ import SelectedChatroom from "./SelectedChatroom";
 import useDebounce from "../utilities/customHooks/useDebounce";
 import { setRoomname } from "../features/socket/socketSlice";
 import { FlexDiv } from "../styles/Sidebarwrapper";
-import { CreateRoom } from ".";
+import { CreateRoom } from "./index";
+import ChatIcon from "@mui/icons-material/Chat";
 
 const Sidebar: React.FC<RefrenceRoomProps> = ({ refrence, data }) => {
   const navigate: NavigateFunction = useNavigate();
@@ -24,7 +25,7 @@ const Sidebar: React.FC<RefrenceRoomProps> = ({ refrence, data }) => {
   const { showSidebar } = useAppSelector((state) => state.global);
   const { currentRoom } = useAppSelector((state) => state.socket);
 
-  const [logout, { isLoading: logoutLoading, isSuccess }] = useLogoutMutation();
+  const [logout, { isLoading: logoutLoading }] = useLogoutMutation();
 
   const handleLogoutClick = async () => {
     await logout();
@@ -50,7 +51,7 @@ const Sidebar: React.FC<RefrenceRoomProps> = ({ refrence, data }) => {
       <nav className={showSidebar ? "sidebar" : "sidebar close"}>
         <header>
           <div className="text logo-text">
-            <span className="name">Chat App</span>
+            <ChatIcon fontSize="large" />
           </div>
 
           <ChevronRightIcon

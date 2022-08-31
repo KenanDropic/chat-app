@@ -5,19 +5,23 @@ import { Meta } from "../socket/interfaces/interfaces";
 interface InitialState {
   data: Message[];
   meta: Meta;
+  loading: boolean;
+  addedNewMessage: boolean;
 }
 
 const initialState: InitialState = {
   data: [],
   meta: {
     page: 1,
-    take: 10,
+    take: 15,
     itemCount: 1,
     previosPage: 0,
     nextPage: 0,
     pageCount: 1,
     skip: 0,
   },
+  loading: false,
+  addedNewMessage: false,
 };
 
 const messagesSlice = createSlice({
@@ -34,14 +38,24 @@ const messagesSlice = createSlice({
     },
     setTake: (state, action: PayloadAction<number>) => {
       state.meta.take = action.payload;
+      // state.loading = false;
     },
     pushNewMessage: (state, action: PayloadAction<Message>) => {
-      state.data.push(action.payload);
+      // unshift - dodavanje elementa na početak niza
+      state.data.unshift(action.payload);
+    },
+    setAddedNewMessage: (state, action: PayloadAction<boolean>) => {
+      state.addedNewMessage = action.payload;
     },
   },
 });
 
-export const { setMessages, setPage, setTake, pushNewMessage } =
-  messagesSlice.actions;
+export const {
+  setMessages,
+  setPage,
+  setTake,
+  pushNewMessage,
+  setAddedNewMessage,
+} = messagesSlice.actions;
 
 export default messagesSlice.reducer;

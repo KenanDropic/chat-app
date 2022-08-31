@@ -11,7 +11,7 @@ export const ContentWrapper = styled("div")(({ theme }) => ({
   height: "84.5%",
   overflowY: "scroll",
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "column-reverse", // column
   scrollbarWidth: "thin",
   scrollbarColor: "lightgray darkgray",
 }));
