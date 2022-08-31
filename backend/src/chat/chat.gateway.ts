@@ -23,6 +23,7 @@ import { JoinedRoomService } from './joined-room.service';
 import { MessagesService } from './messages.service';
 import { MessageDto } from './dto/message.dto';
 import { JoinedRoom } from './entities/joined-room.entity';
+import { ParamsDto } from './dto/params.dto';
 
 @WebSocketGateway({
   cors: {
@@ -124,17 +125,18 @@ export class ChatGateway
   }
 
   @SubscribeMessage('joinRoom')
-  async joinRoom(socket: Socket, room: Room): Promise<void> {
-    const messages = await this.messagesService.findMessagesForRoom(room, {
-      take: 20,
-      page: 1,
-    });
+  async joinRoom(socket: Socket, params: ParamsDto): Promise<void> {
+    // console.log('PARAMS:', '\n', params);
+    const messages = await this.messagesService.findMessagesForRoom(
+      params.room,
+      params.meta,
+    );
 
     // save connection to a room
     await this.joinedRoomService.create({
       socketId: socket.id,
       user: socket.data.user,
-      room,
+      room: params.room,
     });
 
     // send last messages from room to user
@@ -180,5 +182,14 @@ export class ChatGateway
     return this.server
       .to(socket.id)
       .emit('connectedUsers', connectedUsers.length);
+  }
+
+  @SubscribeMessage('addUser')
+  async addUser(socket: Socket, room: Room) {
+    const foundedRoom = await this.roomsService.getRoom(room.id);
+
+    const usersInRoom: JoinedRoom[] = await this.joinedRoomService.findByRoom(
+      foundedRoom,
+    );
   }
 }

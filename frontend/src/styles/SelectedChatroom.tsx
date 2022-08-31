@@ -24,5 +24,6 @@ export const FooterWrapper = styled("footer")(({ theme }) => ({
 export const HeaderWrapper = styled("header")(({ theme }) => ({
   padding: "5px 35px",
   display: "flex",
-  justifyContent: "space-between",
+  justifyContent: "space-around",
+  alignItems: "center",
 }));

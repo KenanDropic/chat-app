@@ -6,6 +6,7 @@ interface InitialState {
   showModal: boolean;
   showSidebar: boolean;
   scroll: boolean;
+  showAddUserModal: boolean;
 }
 
 const initialState: InitialState = {
@@ -14,6 +15,7 @@ const initialState: InitialState = {
   showModal: false,
   showSidebar: false,
   scroll: false,
+  showAddUserModal: false,
 };
 
 const globalSlice = createSlice({
@@ -35,6 +37,9 @@ const globalSlice = createSlice({
     setScroll: (state, action: PayloadAction<boolean>) => {
       state.scroll = action.payload;
     },
+    setShowAddUserModal: (state) => {
+      state.showAddUserModal = !state.showAddUserModal;
+    },
   },
 });
 
@@ -44,6 +49,7 @@ export const {
   setShowModal,
   setShowSidebar,
   setScroll,
+  setShowAddUserModal,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

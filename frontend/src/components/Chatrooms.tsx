@@ -71,7 +71,7 @@ const Chatrooms: React.FC<Props> = ({ data, refrence }) => {
       <ChatroomsWrapper sx={{ display: `${showSidebar ? "block" : "none"}` }}>
         <h3>Chatrooms</h3>
         <ul className="menu-links">
-          {data.map((room: Room, idx: number) => {
+          {data.map((room: any, idx: number) => {
             return (
               <li
                 key={idx}

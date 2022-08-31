@@ -7,8 +7,12 @@ export interface Args {
   dependencies: any;
 }
 
-export default function useDebounce(args: Args): void {
-  const { reset, clear } = useTimeout(args.callback, args.delay);
-  useEffect(reset, [...args.dependencies, reset]);
+export default function useDebounce(
+  callback: any,
+  delay: number,
+  dependencies: any
+): void {
+  const { reset, clear } = useTimeout(callback, delay);
+  useEffect(reset, [...dependencies, reset]);
   useEffect(clear, []);
 }

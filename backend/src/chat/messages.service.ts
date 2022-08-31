@@ -28,7 +28,9 @@ export class MessagesService {
       .addSelect(['user.id', 'user.username', 'user.email', 'user.role'])
       .skip(query.skip)
       .take(query.take)
-      .orderBy('messages.created_at', 'ASC');
+      .orderBy('messages.created_at', 'DESC');
+
+    // poruke sortiram na osnovu datuma kreiranja ali u opadajućem nizu.
 
     if (!messagesForRoom) throw new NotFoundException();
 

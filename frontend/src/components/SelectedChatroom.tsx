@@ -14,6 +14,7 @@ import {
 import { Button, FormControl, FormGroup } from "@mui/material";
 import { useForm } from "react-hook-form";
 import SendIcon from "@mui/icons-material/Send";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import TextFieldIcon from "./TextFieldIcon";
 import {
   pushNewMessage,
@@ -104,6 +105,7 @@ const SelectedChatroom: React.FC<RefrenceRoomProps> = ({ refrence }) => {
           <HeaderWrapper>
             <h3># {currentRoom.name}</h3>
             <h3>Online {onlineCount}</h3>
+            <GroupAddIcon sx={{ cursor: "pointer" }} />
           </HeaderWrapper>
           <hr />
           <ContentWrapper
