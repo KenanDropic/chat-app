@@ -26,7 +26,7 @@
 
 ### Application currently is not deployed.
 ---
-### Installation and running on localhost
+### Installation and running on localhost (backend)
 - npm install (install dependencies)
 - npm prebuild
 - npm run build (convert typescript files to js)
@@ -34,7 +34,11 @@
 - npm start:dev
 - npm start:debug
 - npm start:prod
-
+---
+### Installation and running on localhost (frontend)
+- npm install (install dependencies)
+- npm run dev
+- npm run build (convert typescript files to js)
 ---
 ### Characteristics
 
